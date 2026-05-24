@@ -50,7 +50,6 @@
           {
             "name": "page",
             "in": "query",
-            "description": "Page number",
             "required": false,
             "schema": {
               "type": "integer"
@@ -59,7 +58,6 @@
           {
             "name": "limit",
             "in": "query",
-            "description": "Records per page (max 100)",
             "required": false,
             "schema": {
               "type": "integer"
@@ -68,7 +66,6 @@
           {
             "name": "sort_by",
             "in": "query",
-            "description": "Sort field",
             "required": false,
             "schema": {
               "type": "string",
@@ -82,7 +79,6 @@
           {
             "name": "sort_order",
             "in": "query",
-            "description": "Sort direction",
             "required": false,
             "schema": {
               "type": "string",
@@ -96,7 +92,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Successful response",
+            "description": "Successful Operation",
             "content": {
               "application/json": {
                 "schema": {
@@ -114,6 +110,58 @@
                 }
               }
             }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Books"
+        ],
+        "summary": "Create a book",
+        "operationId": "storeBook",
+        "requestBody": {
+          "description": "Book object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BookRequest"
+              },
+              "examples": {
+                "Example": {
+                  "value": {
+                    "title": "The Great Gatsby",
+                    "author_id": 1,
+                    "isbn": "978-0-7432-7356-5"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Book created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Book"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorUnauthorized"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity"
           }
         }
       }
@@ -377,29 +425,130 @@
           }
         }
       }
+    },
+    "/v1/books/{book}/reviews": {
+      "get": {
+        "tags": [
+          "Books"
+        ],
+        "summary": "Get reviews for a book",
+        "operationId": "showBookReviews",
+        "parameters": [
+          {
+            "name": "book",
+            "in": "path",
+            "description": "Slug of the book",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Records per page (max 100)",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "sort_by",
+            "in": "query",
+            "description": "Sort field",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "createdon",
+                "updatedon"
+              ],
+              "default": "updatedon"
+            }
+          },
+          {
+            "name": "sort_order",
+            "in": "query",
+            "description": "Sort direction",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "desc"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookReviewsList"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorUnauthorized"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
       "Book": {
-        "type": "object",
         "properties": {
           "id": {
-            "type": "integer"
-          },
-          "title": {
-            "type": "string"
+            "type": "integer",
+            "example": 1
           },
           "slug": {
-            "type": "string"
-          },
-          "created_at": {
             "type": "string",
-            "example": "2020-06-29T05:36:22.000000Z"
+            "example": "great-gatsby"
           },
-          "updated_at": {
+          "title": {
             "type": "string",
-            "example": "2020-06-29T05:36:22.000000Z"
+            "example": "The Great Gatsby"
+          },
+          "isbn": {
+            "type": "string",
+            "example": "978-0-7432-7356-5"
+          },
+          "author_id": {
+            "type": "integer",
+            "example": 1
+          },
+          "created_on": {
+            "type": "string",
+            "example": "2024-01-01T00:00:00.000000Z"
+          },
+          "updated_on": {
+            "type": "string",
+            "example": "2024-01-01T00:00:00.000000Z"
           }
         }
       },
@@ -429,7 +578,6 @@
             "$ref": "#/components/schemas/Pagination"
           },
           {
-            "type": "object",
             "properties": {
               "data": {
                 "type": "array",
@@ -494,41 +642,99 @@
         ]
       },
       "Pagination": {
-        "type": "object",
         "properties": {
           "current_page": {
-            "type": "integer"
+            "type": "integer",
+            "example": 1
           },
           "first_page_url": {
-            "type": "string"
+            "type": "string",
+            "example": "https://api.library-test.io/v1/books?page=1"
           },
           "from": {
-            "type": "integer"
+            "type": "integer",
+            "example": 1
           },
           "next_page_url": {
-            "type": "string"
+            "type": "string",
+            "nullable": true,
+            "example": "https://api.library-test.io/v1/books?page=2"
           },
           "path": {
-            "type": "string"
+            "type": "string",
+            "example": "https://api.library-test.io/v1/books"
           },
           "per_page": {
-            "type": "integer"
+            "type": "integer",
+            "example": 25
           },
           "prev_page_url": {
-            "type": "string"
+            "type": "string",
+            "nullable": true,
+            "example": null
           },
           "to": {
-            "type": "integer"
+            "type": "integer",
+            "example": 25
           }
         }
       },
       "ErrorUnauthorized": {
-        "type": "object",
         "properties": {
           "error": {
-            "type": "string"
+            "type": "string",
+            "example": "Unauthorized"
           }
         }
+      },
+      "BookReview": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "book_id": {
+            "type": "integer",
+            "example": 1
+          },
+          "reviewer_name": {
+            "type": "string",
+            "example": "John Doe"
+          },
+          "rating": {
+            "type": "integer",
+            "example": 5
+          },
+          "comment": {
+            "type": "string",
+            "example": "Great book!"
+          },
+          "created_on": {
+            "type": "string",
+            "example": "2024-01-01T00:00:00.000000Z"
+          },
+          "updated_on": {
+            "type": "string",
+            "example": "2024-01-01T00:00:00.000000Z"
+          }
+        }
+      },
+      "BookReviewsList": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Pagination"
+          },
+          {
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/BookReview"
+                }
+              }
+            }
+          }
+        ]
       }
     },
     "securitySchemes": {
