@@ -1,0 +1,276 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Library API",
+    "version": "1.0.0",
+    "description": "Demo API for testing the API Doc Sync Agent. Not real data.",
+    "contact": { "email": "dev@library-test.io" },
+    "x-tagGroups": [
+      {
+        "name": "Entities",
+        "tags": ["Books", "Authors"]
+      }
+    ]
+  },
+  "servers": [
+    { "url": "https://api.library-test.io", "description": "Demo" }
+  ],
+  "security": [{ "global": [] }],
+  "tags": [
+    { "name": "Books",   "description": "Books operations" },
+    { "name": "Authors", "description": "Authors operations" }
+  ],
+  "paths": {
+    "/v1/books": {
+      "get": {
+        "tags": ["Books"],
+        "summary": "List all books",
+        "operationId": "showAllBooks",
+        "parameters": [
+          { "name": "page",       "in": "query", "required": false, "schema": { "type": "integer" } },
+          { "name": "limit",      "in": "query", "required": false, "schema": { "type": "integer" } },
+          { "name": "sort_by",    "in": "query", "required": false, "schema": { "type": "string", "enum": ["createdon", "updatedon"], "default": "updatedon" } },
+          { "name": "sort_order", "in": "query", "required": false, "schema": { "type": "string", "enum": ["asc", "desc"], "default": "desc" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Operation",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/BooksList" } } }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorUnauthorized" } } }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Books"],
+        "summary": "Create a book",
+        "operationId": "storeBook",
+        "requestBody": {
+          "description": "Book object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/BookRequest" },
+              "examples": {
+                "Example": {
+                  "value": { "title": "The Great Gatsby", "author_id": 1, "isbn": "978-0-7432-7356-5" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Book created",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Book" } } }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorUnauthorized" } } }
+          },
+          "422": { "description": "Unprocessable Entity" }
+        }
+      }
+    },
+    "/v1/books/{book}": {
+      "get": {
+        "tags": ["Books"],
+        "summary": "Get a book by slug",
+        "operationId": "showBook",
+        "parameters": [
+          { "name": "book", "in": "path", "description": "Slug of the book", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Operation",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Book" } } }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorUnauthorized" } } }
+          },
+          "404": { "description": "Not Found" }
+        }
+      },
+      "put": {
+        "tags": ["Books"],
+        "summary": "Update a book",
+        "operationId": "editBook",
+        "parameters": [
+          { "name": "book", "in": "path", "description": "Slug of the book", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "description": "Book object",
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/BookRequest" } }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Operation",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Book" } } }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorUnauthorized" } } }
+          },
+          "422": { "description": "Unprocessable Entity" }
+        }
+      },
+      "delete": {
+        "tags": ["Books"],
+        "summary": "Delete a book",
+        "operationId": "deleteBook",
+        "parameters": [
+          { "name": "book", "in": "path", "description": "Slug of the book", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Successful Operation" },
+          "401": {
+            "description": "Unauthorized",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorUnauthorized" } } }
+          },
+          "404": { "description": "Not Found" }
+        }
+      }
+    },
+    "/v1/authors": {
+      "get": {
+        "tags": ["Authors"],
+        "summary": "List all authors",
+        "operationId": "showAllAuthors",
+        "parameters": [
+          { "name": "page",       "in": "query", "required": false, "schema": { "type": "integer" } },
+          { "name": "limit",      "in": "query", "required": false, "schema": { "type": "integer" } },
+          { "name": "sort_by",    "in": "query", "required": false, "schema": { "type": "string", "enum": ["createdon", "updatedon"], "default": "updatedon" } },
+          { "name": "sort_order", "in": "query", "required": false, "schema": { "type": "string", "enum": ["asc", "desc"], "default": "desc" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Operation",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/AuthorsList" } } }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorUnauthorized" } } }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Authors"],
+        "summary": "Create an author",
+        "operationId": "storeAuthor",
+        "requestBody": {
+          "description": "Author object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/AuthorRequest" },
+              "examples": {
+                "Example": { "value": { "name": "F. Scott Fitzgerald" } }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Author created",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Author" } } }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorUnauthorized" } } }
+          },
+          "422": { "description": "Unprocessable Entity" }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Book": {
+        "properties": {
+          "id":         { "type": "integer", "example": 1 },
+          "slug":       { "type": "string",  "example": "great-gatsby" },
+          "title":      { "type": "string",  "example": "The Great Gatsby" },
+          "isbn":       { "type": "string",  "example": "978-0-7432-7356-5" },
+          "author_id":  { "type": "integer", "example": 1 },
+          "created_on": { "type": "string",  "example": "2024-01-01T00:00:00.000000Z" },
+          "updated_on": { "type": "string",  "example": "2024-01-01T00:00:00.000000Z" }
+        }
+      },
+      "BookRequest": {
+        "properties": {
+          "title":     { "type": "string",  "minLength": 1 },
+          "author_id": { "type": "integer" },
+          "isbn":      { "type": "string",  "minLength": 1 }
+        },
+        "required": ["title", "author_id", "isbn"]
+      },
+      "BooksList": {
+        "allOf": [
+          { "$ref": "#/components/schemas/Pagination" },
+          {
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": { "$ref": "#/components/schemas/Book" }
+              }
+            }
+          }
+        ]
+      },
+      "Author": {
+        "properties": {
+          "id":         { "type": "integer", "example": 1 },
+          "slug":       { "type": "string",  "example": "fitzgerald" },
+          "name":       { "type": "string",  "example": "F. Scott Fitzgerald" },
+          "created_on": { "type": "string",  "example": "2024-01-01T00:00:00.000000Z" },
+          "updated_on": { "type": "string",  "example": "2024-01-01T00:00:00.000000Z" }
+        }
+      },
+      "AuthorRequest": {
+        "properties": {
+          "name": { "type": "string", "minLength": 1 }
+        },
+        "required": ["name"]
+      },
+      "AuthorsList": {
+        "allOf": [
+          { "$ref": "#/components/schemas/Pagination" },
+          {
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": { "$ref": "#/components/schemas/Author" }
+              }
+            }
+          }
+        ]
+      },
+      "Pagination": {
+        "properties": {
+          "current_page":   { "type": "integer", "example": 1 },
+          "first_page_url": { "type": "string",  "example": "https://api.library-test.io/v1/books?page=1" },
+          "from":           { "type": "integer", "example": 1 },
+          "next_page_url":  { "type": "string",  "nullable": true, "example": "https://api.library-test.io/v1/books?page=2" },
+          "path":           { "type": "string",  "example": "https://api.library-test.io/v1/books" },
+          "per_page":       { "type": "integer", "example": 25 },
+          "prev_page_url":  { "type": "string",  "nullable": true, "example": null },
+          "to":             { "type": "integer", "example": 25 }
+        }
+      },
+      "ErrorUnauthorized": {
+        "properties": {
+          "error": { "type": "string", "example": "Unauthorized" }
+        }
+      }
+    },
+    "securitySchemes": {
+      "global": { "type": "http", "scheme": "bearer" }
+    }
+  }
+}
