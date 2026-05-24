@@ -707,7 +707,7 @@
           },
           "comment": {
             "type": "string",
-            "example": "Great book!"
+            "example": "Excellent book, highly recommended!"
           },
           "created_on": {
             "type": "string",
