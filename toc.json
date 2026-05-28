@@ -1,0 +1,24 @@
+{
+  "items": [
+    {
+      "type": "item",
+      "title": "Getting Started",
+      "uri": "docs/Getting Started.md"
+    },
+    {
+      "type": "item",
+      "title": "Authentication",
+      "uri": "docs/Authentication.md"
+    },
+    {
+      "type": "item",
+      "title": "Rate Limiting",
+      "uri": "docs/Rate Limiting.md"
+    },
+    {
+      "type": "item",
+      "title": "Endpoints",
+      "uri": "reference/Public-API.v1.json"
+    }
+  ]
+}
