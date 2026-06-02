@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Library API",
-    "version": "1.0.1",
+    "version": "1.0.4",
     "description": "Demo API for testing the API Doc Sync Agent. Not real data.",
     "contact": {
       "email": "dev@library-test.io"
@@ -12,7 +12,8 @@
         "name": "Entities",
         "tags": [
           "Books",
-          "Authors"
+          "Authors",
+          "Publishers"
         ]
       }
     ]
@@ -36,6 +37,10 @@
     {
       "name": "Authors",
       "description": "Authors operations"
+    },
+    {
+      "name": "Publishers",
+      "description": "Publishers operations"
     }
   ],
   "paths": {
@@ -469,6 +474,295 @@
             }
           }
         }
+      },
+      "post": {
+        "tags": [
+          "Books"
+        ],
+        "summary": "Create a review for a book",
+        "operationId": "storeBookReview",
+        "parameters": [
+          {
+            "name": "book",
+            "in": "path",
+            "description": "Slug of the book",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReviewRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Review created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Review"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorUnauthorized"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity"
+          }
+        }
+      }
+    },
+    "/v1/authors/{author}": {
+      "get": {
+        "tags": [
+          "Authors"
+        ],
+        "summary": "Get an author by slug",
+        "operationId": "showAuthor",
+        "parameters": [
+          {
+            "name": "author",
+            "in": "path",
+            "description": "Slug of the author",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Author"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorUnauthorized"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Authors"
+        ],
+        "summary": "Update an author",
+        "operationId": "updateAuthor",
+        "parameters": [
+          {
+            "name": "author",
+            "in": "path",
+            "description": "Slug of the author",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthorRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Author"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorUnauthorized"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity"
+          }
+        }
+      }
+    },
+    "/v1/publishers": {
+      "get": {
+        "tags": [
+          "Publishers"
+        ],
+        "summary": "List all publishers",
+        "operationId": "showAllPublishers",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorUnauthorized"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Publishers"
+        ],
+        "summary": "Create a publisher",
+        "operationId": "storePublisher",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PublisherRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Publisher created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Publisher"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorUnauthorized"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity"
+          }
+        }
+      }
+    },
+    "/v1/books/{book}/reviews/{review}": {
+      "delete": {
+        "tags": [
+          "Books"
+        ],
+        "summary": "Delete a book review",
+        "operationId": "deleteBookReview",
+        "parameters": [
+          {
+            "name": "book",
+            "in": "path",
+            "description": "Slug of the book",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "review",
+            "in": "path",
+            "description": "ID of the review",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Operation"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorUnauthorized"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
       }
     }
   },
@@ -658,6 +952,54 @@
           "comment": {
             "type": "string",
             "example": "Great read"
+          }
+        },
+        "type": "object"
+      },
+      "ReviewRequest": {
+        "required": [
+          "rating"
+        ],
+        "properties": {
+          "rating": {
+            "type": "integer",
+            "maximum": 5,
+            "minimum": 1,
+            "example": 5
+          },
+          "comment": {
+            "type": "string",
+            "example": "Could not put this book down"
+          }
+        },
+        "type": "object"
+      },
+      "Publisher": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "slug": {
+            "type": "string",
+            "example": "penguin-random-house"
+          },
+          "name": {
+            "type": "string",
+            "example": "Penguin Random House"
+          }
+        },
+        "type": "object"
+      },
+      "PublisherRequest": {
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "example": "Penguin Random House"
           }
         },
         "type": "object"
